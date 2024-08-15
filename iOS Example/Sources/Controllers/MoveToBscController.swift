@@ -1,7 +1,7 @@
 import Combine
 import UIKit
 import SnapKit
-import HsExtensions
+import WWExtensions
 
 class MoveToBscController: UIViewController {
     private var cancellables = Set<AnyCancellable>()

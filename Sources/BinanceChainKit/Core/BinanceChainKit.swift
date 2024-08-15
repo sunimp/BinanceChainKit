@@ -1,8 +1,8 @@
 import Foundation
 import Combine
-import HdWalletKit
-import HsToolKit
-import HsExtensions
+import HDWalletKit
+import WWToolKit
+import WWExtensions
 
 public class BinanceChainKit {
     private var cancellables = Set<AnyCancellable>()

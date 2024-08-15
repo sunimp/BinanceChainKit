@@ -1,6 +1,6 @@
 import Foundation
 import SwiftyJSON
-import HsToolKit
+import WWToolKit
 
 class Parser {
 

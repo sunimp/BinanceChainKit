@@ -1,5 +1,5 @@
 import Foundation
-import HsToolKit
+import WWToolKit
 import Alamofire
 
 // https://binance-chain.github.io/api-reference/dex-api/paths.html

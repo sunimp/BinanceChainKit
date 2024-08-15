@@ -1,4 +1,4 @@
-import HsToolKit
+import WWToolKit
 
 class AccountSyncer {
     private let apiProvider: IApiProvider

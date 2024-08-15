@@ -45,12 +45,7 @@ class TransactionCell: UITableViewCell {
     }
 
     func bind(transaction: TransactionRecord, coin: String, lastBlockHeight: Int?) {
-        var confirmations = "n/a"
-
-        if let lastBlockHeight = lastBlockHeight {
-            confirmations = "\(lastBlockHeight - transaction.blockNumber + 1)"
-        }
-
+  
         titlesLabel.set(string: """
                                 Tx Id:
                                 Block number:

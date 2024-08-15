@@ -1,6 +1,6 @@
 import Foundation
 import BinanceChainKit
-import HdWalletKit
+import HDWalletKit
 
 class Manager {
     static let shared = Manager()

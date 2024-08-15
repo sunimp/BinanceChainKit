@@ -1,6 +1,6 @@
 import UIKit
 import SnapKit
-import HdWalletKit
+import HDWalletKit
 
 class WordsController: UIViewController {
     private let textView = UITextView()
@@ -92,7 +92,7 @@ class WordsController: UIViewController {
 
             try Manager.shared.login(words: words)
 
-            if let window = UIApplication.shared.keyWindow {
+            if let window = UIApplication.shared.activeWindow {
                 UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: {
                     window.rootViewController = MainController()
                 })

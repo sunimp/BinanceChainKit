@@ -1,7 +1,7 @@
 import UIKit
 import SnapKit
 import BinanceChainKit
-import HsExtensions
+import WWExtensions
 
 class SendController: UIViewController {
     private let adapter: BinanceChainAdapter = Manager.shared.adapter

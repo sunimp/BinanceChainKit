@@ -39,7 +39,7 @@ struct StdTx {
     var source: Int64 = 0
 
     ///byte array, reserved for future use
-    var data: Data = SwiftProtobuf.Internal.emptyData
+    var data: Data = Data()
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -52,10 +52,10 @@ struct StdSignature {
     // methods supported on all messages.
 
     /// public key bytes of the signer address
-    var pubKey: Data = SwiftProtobuf.Internal.emptyData
+    var pubKey: Data = Data()
 
     /// signature bytes, please check chain access section for signature generation
-    var signature: Data = SwiftProtobuf.Internal.emptyData
+    var signature: Data = Data()
 
     /// another identifier of signer, which can be read from chain by account REST API or RPC
     var accountNumber: Int64 = 0
@@ -86,7 +86,7 @@ struct NewOrder {
     // methods supported on all messages.
 
     ///    0xCE6DC043 // hardcoded, object type prefix in 4 bytes
-    var sender: Data = SwiftProtobuf.Internal.emptyData
+    var sender: Data = Data()
 
     /// order id, optional
     var id: String = String()
@@ -121,7 +121,7 @@ struct CancelOrder {
     // methods supported on all messages.
 
     ///    0x166E681B   // hardcoded, object type prefix in 4 bytes
-    var sender: Data = SwiftProtobuf.Internal.emptyData
+    var sender: Data = Data()
 
     /// symbol for trading pair in full name of the tokens
     var symbol: String = String()
@@ -141,7 +141,7 @@ struct TokenFreeze {
     // methods supported on all messages.
 
     ///    0xE774B32D   // hardcoded, object type prefix in 4 bytes
-    var from: Data = SwiftProtobuf.Internal.emptyData
+    var from: Data = Data()
 
     /// token symbol, in full name with "-" suffix
     var symbol: String = String()
@@ -161,7 +161,7 @@ struct TokenUnfreeze {
     // methods supported on all messages.
 
     ///    0x6515FF0D   // hardcoded, object type prefix in 4 bytes
-    var from: Data = SwiftProtobuf.Internal.emptyData
+    var from: Data = Data()
 
     /// token symbol, in full name with "-" suffix
     var symbol: String = String()
@@ -206,7 +206,7 @@ struct Send {
         // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
         // methods supported on all messages.
 
-        var address: Data = SwiftProtobuf.Internal.emptyData
+        var address: Data = Data()
 
         var coins: [Send.Token] = []
 
@@ -220,7 +220,7 @@ struct Send {
         // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
         // methods supported on all messages.
 
-        var address: Data = SwiftProtobuf.Internal.emptyData
+        var address: Data = Data()
 
         var coins: [Send.Token] = []
 
@@ -242,7 +242,7 @@ struct Vote {
     var proposalID: Int64 = 0
 
     /// address of the voter
-    var voter: Data = SwiftProtobuf.Internal.emptyData
+    var voter: Data = Data()
 
     /// option from OptionSet chosen by the voter,
     var option: Int64 = 0
@@ -254,8 +254,8 @@ struct Vote {
 
 struct TransferOut {
 
-    var from: Data = SwiftProtobuf.Internal.emptyData
-    var to: Data = SwiftProtobuf.Internal.emptyData
+    var from: Data = Data()
+    var to: Data = Data()
     var amount: Send.Token = Send.Token()
     var expireTime: Int64 = 0
     var unknownFields = SwiftProtobuf.UnknownStorage()

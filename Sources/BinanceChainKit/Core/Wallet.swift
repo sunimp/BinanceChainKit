@@ -1,6 +1,6 @@
 import Foundation
-import HdWalletKit
-import HsCryptoKit
+import HDWalletKit
+import WWCryptoKit
 
 class Wallet {
 

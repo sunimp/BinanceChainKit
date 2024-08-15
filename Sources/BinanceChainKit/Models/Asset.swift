@@ -1,6 +1,6 @@
 import Foundation
 import Combine
-import HsExtensions
+import WWExtensions
 
 public class Asset {
     public let symbol: String

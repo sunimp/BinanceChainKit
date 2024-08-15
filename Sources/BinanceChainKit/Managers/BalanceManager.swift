@@ -1,5 +1,5 @@
 import Foundation
-import HsToolKit
+import WWToolKit
 
 class BalanceManager {
     weak var delegate: IBalanceManagerDelegate?
