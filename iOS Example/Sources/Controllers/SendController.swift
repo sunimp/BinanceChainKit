@@ -1,4 +1,12 @@
+//
+//  SendController.swift
+//  BinanceChainKit-Example
+//
+//  Created by Sun on 2024/8/21.
+//
+
 import UIKit
+
 import SnapKit
 import BinanceChainKit
 import WWExtensions

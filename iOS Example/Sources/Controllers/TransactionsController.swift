@@ -1,5 +1,12 @@
-import Combine
+//
+//  TransactionsController.swift
+//  BinanceChainKit-Example
+//
+//  Created by Sun on 2024/8/21.
+//
+
 import UIKit
+import Combine
 
 class TransactionsController: UITableViewController {
     private let limit = 20

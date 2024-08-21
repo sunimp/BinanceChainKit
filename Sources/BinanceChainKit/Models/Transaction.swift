@@ -1,4 +1,12 @@
+//
+//  Transaction.swift
+//  BinanceChainKit
+//
+//  Created by Sun on 2024/8/21.
+//
+
 import Foundation
+
 import GRDB
 
 class Transaction: Record {

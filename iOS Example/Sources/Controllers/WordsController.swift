@@ -1,6 +1,15 @@
+//
+//  WordsController.swift
+//  BinanceChainKit-Example
+//
+//  Created by Sun on 2024/8/21.
+//
+
 import UIKit
+
 import SnapKit
 import HDWalletKit
+import UIExtensions
 
 class WordsController: UIViewController {
     private let textView = UITextView()

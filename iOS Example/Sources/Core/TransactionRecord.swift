@@ -1,3 +1,10 @@
+//
+//  TransactionRecord.swift
+//  BinanceChainKit-Example
+//
+//  Created by Sun on 2024/8/21.
+//
+
 import Foundation
 
 struct TransactionRecord {

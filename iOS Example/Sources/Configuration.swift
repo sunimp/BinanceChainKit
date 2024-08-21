@@ -1,3 +1,12 @@
+//
+//  Configuration.swift
+//  BinanceChainKit-Example
+//
+//  Created by Sun on 2024/8/21.
+//
+
+import Foundation
+
 import BinanceChainKit
 import WWToolKit
 

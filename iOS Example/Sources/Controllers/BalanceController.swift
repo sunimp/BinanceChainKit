@@ -1,7 +1,16 @@
-import Combine
+//
+//  BalanceController.swift
+//  BinanceChainKit-Example
+//
+//  Created by Sun on 2024/8/21.
+//
+
 import UIKit
+import Combine
+
 import SnapKit
 import BinanceChainKit
+import UIExtensions
 
 class BalanceController: UIViewController {
     private let adapter: BinanceChainAdapter = Manager.shared.adapter
