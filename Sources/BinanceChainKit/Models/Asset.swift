@@ -5,16 +5,19 @@
 //  Created by Sun on 2024/8/21.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 import WWExtensions
+
+// MARK: - Asset
 
 public class Asset {
     public let symbol: String
     public let address: String
 
-    @DistinctPublished public var balance: Decimal
+    @DistinctPublished
+    public var balance: Decimal
 
     let transactionsSubject = PassthroughSubject<[TransactionInfo], Never>()
 
@@ -26,31 +29,35 @@ public class Asset {
 
     public func transactionsPublisher(filterType: TransactionFilterType? = nil) -> some Publisher<[TransactionInfo], Never> {
         transactionsSubject
-                .map { [weak self] (transactions: [TransactionInfo]) -> [TransactionInfo] in
-                    guard let address = self?.address else {
-                        return []
-                    }
+            .map { [weak self] (transactions: [TransactionInfo]) -> [TransactionInfo] in
+                guard let address = self?.address else {
+                    return []
+                }
 
-                    return transactions.filter { transaction in
-                        switch filterType {
-                        case .incoming: return transaction.to == address
-                        case .outgoing: return transaction.from == address
-                        case nil: return true
-                        }
+                return transactions.filter { transaction in
+                    switch filterType {
+                    case .incoming: transaction.to == address
+                    case .outgoing: transaction.from == address
+                    case nil: true
                     }
                 }
-                .filter { !$0.isEmpty }
+            }
+            .filter { !$0.isEmpty }
     }
 
 }
 
+// MARK: Equatable
+
 extension Asset: Equatable {
 
-    public static func ==(lhs: Asset, rhs: Asset) -> Bool {
+    public static func == (lhs: Asset, rhs: Asset) -> Bool {
         lhs.symbol == rhs.symbol
     }
 
 }
+
+// MARK: CustomStringConvertible
 
 extension Asset: CustomStringConvertible {
 

@@ -9,11 +9,13 @@ import Foundation
 
 import GRDB
 
+// MARK: - Storage
+
 class Storage {
     private let dbPool: DatabasePool
 
-    init(databaseDirectoryUrl: URL, databaseFileName: String) {
-        let databaseURL = databaseDirectoryUrl.appendingPathComponent("\(databaseFileName).sqlite")
+    init(databaseDirectoryURL: URL, databaseFileName: String) {
+        let databaseURL = databaseDirectoryURL.appendingPathComponent("\(databaseFileName).sqlite")
 
         dbPool = try! DatabasePool(path: databaseURL.path)
 
@@ -73,6 +75,8 @@ class Storage {
 
 }
 
+// MARK: IStorage
+
 extension Storage: IStorage {
 
     var latestBlock: LatestBlock? {
@@ -121,7 +125,7 @@ extension Storage: IStorage {
 
     func save(balances: [Balance]) {
         _ = try? dbPool.write { db in
-            for balance in  balances {
+            for balance in balances {
                 try balance.insert(db)
             }
         }
@@ -135,24 +139,32 @@ extension Storage: IStorage {
         }
     }
 
-    func transactions(symbol: String, fromAddress: String?, toAddress: String?, fromTransactionHash: String?, limit: Int?) -> [Transaction] {
+    func transactions(
+        symbol: String,
+        fromAddress: String?,
+        toAddress: String?,
+        fromTransactionHash: String?,
+        limit: Int?
+    ) -> [Transaction] {
         try! dbPool.read { db in
             var request = Transaction.filter(Transaction.Columns.symbol == symbol)
 
-            if let fromAddress = fromAddress {
+            if let fromAddress {
                 request = request.filter(Transaction.Columns.from == fromAddress)
             }
 
-            if let toAddress = toAddress {
+            if let toAddress {
                 request = request.filter(Transaction.Columns.to == toAddress)
             }
 
-            if let transactionHash = fromTransactionHash,
-               let transaction = try Transaction.filter(Transaction.Columns.hash == transactionHash).fetchOne(db) {
+            if
+                let transactionHash = fromTransactionHash,
+                let transaction = try Transaction.filter(Transaction.Columns.hash == transactionHash).fetchOne(db)
+            {
                 request = request.filter(Transaction.Columns.date < transaction.date)
             }
 
-            if let limit = limit {
+            if let limit {
                 request = request.limit(limit)
             }
 

@@ -10,15 +10,17 @@ import Foundation
 import HDWalletKit
 import WWCryptoKit
 
+// MARK: - Wallet
+
 class Wallet {
 
     static let bcPrivateKeyPath = "m/44'/714'/0'/0/0"
     static let bscMainNetKeyPath = "m/44'/60'/0'/0/0"
     static let bscTestNetKeyPath = "m/44'/1'/0'/0/0"
 
-    var sequence: Int = 0
-    var accountNumber: Int = 0
-    var chainId: String = ""
+    var sequence = 0
+    var accountNumber = 0
+    var chainID = ""
 
     let publicKey: Data
     let address: String
@@ -49,7 +51,7 @@ class Wallet {
         sequence += 1
     }
 
-    func nextAvailableOrderId() -> String {
+    func nextAvailableOrderID() -> String {
         String(format: "%@-%d", publicKeyHashHex.uppercased(), sequence + 1)
     }
 
@@ -68,11 +70,20 @@ class Wallet {
 
 }
 
-extension Wallet : CustomStringConvertible {
+// MARK: CustomStringConvertible
+
+extension Wallet: CustomStringConvertible {
 
     var description: String {
-        String(format: "Wallet [address=%@ accountNumber=%d, sequence=%d, chain_id=%@, account=%@, publicKey=%@]",
-                address, accountNumber, sequence, chainId, address, publicKey.hexlify)
+        String(
+            format: "Wallet [address=%@ accountNumber=%d, sequence=%d, chain_id=%@, account=%@, publicKey=%@]",
+            address,
+            accountNumber,
+            sequence,
+            chainID,
+            address,
+            publicKey.hexlify
+        )
     }
 
 }

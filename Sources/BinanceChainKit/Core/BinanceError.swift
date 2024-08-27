@@ -9,6 +9,8 @@ import Foundation
 
 import Alamofire
 
+// MARK: - BinanceError
+
 public class BinanceError: Error {
     public var code: Int
     public var message: String
@@ -21,6 +23,8 @@ public class BinanceError: Error {
     }
 
 }
+
+// MARK: CustomStringConvertible
 
 extension BinanceError: CustomStringConvertible {
 

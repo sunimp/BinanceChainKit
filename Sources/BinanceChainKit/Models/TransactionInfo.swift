@@ -19,15 +19,15 @@ public class TransactionInfo {
     public let memo: String?
 
     init(transaction: Transaction) {
-        self.hash = transaction.hash
-        self.blockHeight = transaction.blockHeight
-        self.date = transaction.date
-        self.from = transaction.from
-        self.to = transaction.to
-        self.amount = transaction.amount
-        self.fee = transaction.fee
-        self.symbol = transaction.symbol
-        self.memo = transaction.memo
+        hash = transaction.hash
+        blockHeight = transaction.blockHeight
+        date = transaction.date
+        from = transaction.from
+        to = transaction.to
+        amount = transaction.amount
+        fee = transaction.fee
+        symbol = transaction.symbol
+        memo = transaction.memo
     }
 
 }

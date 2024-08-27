@@ -24,8 +24,10 @@ class Transaction: Record {
 
 
     init?(tx: Tx) {
-        guard let txValue = Decimal(string: tx.value),
-              let txFee = Decimal(string: tx.txFee) else {
+        guard
+            let txValue = Decimal(string: tx.value),
+            let txFee = Decimal(string: tx.txFee)
+        else {
             return nil
         }
 
@@ -43,7 +45,7 @@ class Transaction: Record {
     }
 
     override public class var databaseTableName: String {
-        return "transactions"
+        "transactions"
     }
 
     enum Columns: String, ColumnExpression {
@@ -85,11 +87,11 @@ class Transaction: Record {
     }
 
     private static func decimalValue(of int64: Int64) -> Decimal {
-        return Decimal(sign: .plus, exponent: -decimal, significand: Decimal(int64))
+        Decimal(sign: .plus, exponent: -decimal, significand: Decimal(int64))
     }
 
     private static func int64Value(of decimalValue: Decimal) -> Int64 {
-        return Int64(truncating: Decimal(sign: .plus, exponent: decimal, significand: decimalValue) as NSNumber)
+        Int64(truncating: Decimal(sign: .plus, exponent: decimal, significand: decimalValue) as NSNumber)
     }
 
 }

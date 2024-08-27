@@ -12,7 +12,6 @@ public class BinanceAddressValidator {
 
     public init(prefix: String) {
         segWitBech32 = SegWitBech32(hrp: prefix)
-
     }
 
     public func validate(address: String) throws {

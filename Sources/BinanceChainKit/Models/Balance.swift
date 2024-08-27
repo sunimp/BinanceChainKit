@@ -9,6 +9,8 @@ import Foundation
 
 import GRDB
 
+// MARK: - Balance
+
 class Balance: Record {
     let symbol: String
     var amount: Decimal
@@ -21,7 +23,7 @@ class Balance: Record {
     }
 
     override class var databaseTableName: String {
-        return "balances"
+        "balances"
     }
 
     enum Columns: String, ColumnExpression {
@@ -43,10 +45,12 @@ class Balance: Record {
 
 }
 
+// MARK: CustomStringConvertible
+
 extension Balance: CustomStringConvertible {
 
     public var description: String {
-        return "BALANCE: [symbol: \(symbol); amount: \(amount)]"
+        "BALANCE: [symbol: \(symbol); amount: \(amount)]"
     }
 
 }

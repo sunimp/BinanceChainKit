@@ -20,7 +20,7 @@ class SyncState: Record {
     }
     
     override class var databaseTableName: String {
-        return "sync_states"
+        "sync_states"
     }
     
     enum Columns: String, ColumnExpression {

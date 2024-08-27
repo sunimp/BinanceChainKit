@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - Interval
+
 enum Interval: String {
     case oneMinute = "1m"
     case threeMinutes = "3m"
@@ -25,6 +27,8 @@ enum Interval: String {
     case oneMonth = "1M"
 }
 
+// MARK: - Limit
+
 enum Limit: Int {
     case five = 5
     case ten = 10
@@ -35,11 +39,15 @@ enum Limit: Int {
     case oneThousand = 1000
 }
 
+// MARK: - Side
+
 enum Side: Int {
     case unknown = 0
     case buy = 1
     case sell = 2
 }
+
+// MARK: - Status
 
 enum Status: String {
     case unknown = ""
@@ -53,10 +61,14 @@ enum Status: String {
     case failedMatching = "FailedMatching"
 }
 
+// MARK: - Total
+
 enum Total: Int {
     case notRequired = 0
     case required = 1
 }
+
+// MARK: - TxType
 
 enum TxType: String {
     case unknown = ""
@@ -74,11 +86,15 @@ enum TxType: String {
     case deposit = "DEPOSIT"
 }
 
+// MARK: - TimeInForce
+
 enum TimeInForce: Int {
     case unknown = 0
     case goodTillExpire = 1
     case immediateOrCancel = 3
 }
+
+// MARK: - TransactionSide
 
 enum TransactionSide: String {
     case unknown = ""
@@ -86,10 +102,14 @@ enum TransactionSide: String {
     case send = "SEND"
 }
 
+// MARK: - OrderType
+
 enum OrderType: Int {
     case unknown = 0
     case limit = 2
 }
+
+// MARK: - FeeFor
 
 enum FeeFor: Int {
     case unknown = 0
@@ -98,12 +118,16 @@ enum FeeFor: Int {
     case free = 3
 }
 
+// MARK: - VoteOption
+
 enum VoteOption: Int {
     case yes = 1
     case abstain = 2
     case no = 3
     case noWithVeto = 4
 }
+
+// MARK: - QueryPath
 
 enum QueryPath: String {
     case storeAccountKey = "/store/acc/key"

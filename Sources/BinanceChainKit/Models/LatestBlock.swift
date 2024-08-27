@@ -9,6 +9,8 @@ import Foundation
 
 import GRDB
 
+// MARK: - LatestBlock
+
 class LatestBlock: Record {
     private let primaryKey = "primary_key"
     let height: Int
@@ -24,7 +26,7 @@ class LatestBlock: Record {
     }
     
     override class var databaseTableName: String {
-        return "latest_block"
+        "latest_block"
     }
     
     enum Columns: String, ColumnExpression {
@@ -43,20 +45,26 @@ class LatestBlock: Record {
     }
     
     init?(syncInfo: [String: Any]) {
-        guard let latestBlockHeightValue = syncInfo["latest_block_height"],
-            let latestBlockHeight = latestBlockHeightValue as? NSNumber else {
-                return nil
+        guard
+            let latestBlockHeightValue = syncInfo["latest_block_height"],
+            let latestBlockHeight = latestBlockHeightValue as? NSNumber
+        else {
+            return nil
         }
         
-        guard let latestBlockHashValue = syncInfo["latest_block_hash"],
-            let latestBlockHash = latestBlockHashValue as? String else {
-                return nil
+        guard
+            let latestBlockHashValue = syncInfo["latest_block_hash"],
+            let latestBlockHash = latestBlockHashValue as? String
+        else {
+            return nil
         }
         
-        guard let latestBlockTimeValue = syncInfo["latest_block_time"],
+        guard
+            let latestBlockTimeValue = syncInfo["latest_block_time"],
             let latestBlockTimeStr = latestBlockTimeValue as? String,
-            let latestBlockTime = latestBlockTimeStr.toDate() else {
-                return nil
+            let latestBlockTime = latestBlockTimeStr.toDate()
+        else {
+            return nil
         }
         
         height = Int(truncating: latestBlockHeight)
@@ -75,10 +83,12 @@ class LatestBlock: Record {
     
 }
 
+// MARK: CustomStringConvertible
+
 extension LatestBlock: CustomStringConvertible {
     
     public var description: String {
-        return "LATEST BLOCK: [height: \(height), hash: \(hash); time: \(time)]"
+        "LATEST BLOCK: [height: \(height), hash: \(hash); time: \(time)]"
     }
     
 }

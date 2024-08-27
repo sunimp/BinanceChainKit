@@ -10,7 +10,7 @@ import Foundation
 import WWToolKit
 
 class BalanceManager {
-    weak var delegate: IBalanceManagerDelegate?
+    weak var delegate: IBalanceManagerDelegate? = nil
 
     private let storage: IStorage
     private let accountSyncer: AccountSyncer
@@ -41,7 +41,10 @@ class BalanceManager {
     }
 
     private func handle(nodeInfo: NodeInfo, account: Account) {
-        logger?.debug("NodeInfo received with network: \(nodeInfo.network); latestBlockHeight: \(String(describing: nodeInfo.syncInfo["latest_block_height"]))")
+        logger?
+            .debug(
+                "NodeInfo received with network: \(nodeInfo.network); latestBlockHeight: \(String(describing: nodeInfo.syncInfo["latest_block_height"]))"
+            )
         logger?.debug("Balances received for \(account.balances.map { "\($0.symbol): \($0.free)" }.joined(separator: ", "))")
 
         let oldBalances = storage.allBalances()

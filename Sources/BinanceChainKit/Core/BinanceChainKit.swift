@@ -5,12 +5,14 @@
 //  Created by Sun on 2024/8/21.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 import HDWalletKit
-import WWToolKit
 import WWExtensions
+import WWToolKit
+
+// MARK: - BinanceChainKit
 
 public class BinanceChainKit {
     private var cancellables = Set<AnyCancellable>()
@@ -29,8 +31,10 @@ public class BinanceChainKit {
 
     private var assets = [Asset]()
 
-    @DistinctPublished public var syncState: SyncState = .notSynced(error: BinanceChainKit.SyncError.notStarted)
-    @DistinctPublished public var lastBlockHeight: Int?
+    @DistinctPublished
+    public var syncState: SyncState = .notSynced(error: BinanceChainKit.SyncError.notStarted)
+    @DistinctPublished
+    public var lastBlockHeight: Int?
 
     public var binanceBalance: Decimal {
         balanceManager.balance(symbol: "BNB")?.amount ?? 0
@@ -40,7 +44,15 @@ public class BinanceChainKit {
         wallet.address
     }
 
-    init(wallet: Wallet, balanceManager: BalanceManager, transactionManager: TransactionManager, reachabilityManager: ReachabilityManager, segWitHelper: SegWitBech32, networkType: NetworkType, logger: Logger? = nil) {
+    init(
+        wallet: Wallet,
+        balanceManager: BalanceManager,
+        transactionManager: TransactionManager,
+        reachabilityManager: ReachabilityManager,
+        segWitHelper: SegWitBech32,
+        networkType: NetworkType,
+        logger: Logger? = nil
+    ) {
         self.wallet = wallet
         self.balanceManager = balanceManager
         self.transactionManager = transactionManager
@@ -52,10 +64,10 @@ public class BinanceChainKit {
         lastBlockHeight = balanceManager.latestBlock?.height
 
         reachabilityManager.$isReachable
-                .sink { [weak self] aaa in
-                    self?.refresh()
-                }
-                .store(in: &cancellables)
+            .sink { [weak self] _ in
+                self?.refresh()
+            }
+            .store(in: &cancellables)
     }
 
     private func asset(symbol: String) -> Asset? {
@@ -124,11 +136,21 @@ extension BinanceChainKit {
         try _ = segWitHelper.decode(addr: address)
     }
 
-    public func transactions(symbol: String, filterType: TransactionFilterType? = nil, fromTransactionHash: String? = nil, limit: Int? = nil) -> [TransactionInfo] {
-        transactionManager.transactions(symbol: symbol, filterType: filterType, fromTransactionHash: fromTransactionHash, limit: limit)
-                .map { transaction in
-                    TransactionInfo(transaction: transaction)
-                }
+    public func transactions(
+        symbol: String,
+        filterType: TransactionFilterType? = nil,
+        fromTransactionHash: String? = nil,
+        limit: Int? = nil
+    ) -> [TransactionInfo] {
+        transactionManager.transactions(
+            symbol: symbol,
+            filterType: filterType,
+            fromTransactionHash: fromTransactionHash,
+            limit: limit
+        )
+        .map { transaction in
+            TransactionInfo(transaction: transaction)
+        }
     }
 
     public func transaction(symbol: String, hash: String) -> TransactionInfo? {
@@ -146,7 +168,11 @@ extension BinanceChainKit {
     public func moveToBSC(symbol: String, amount: Decimal) async throws -> String {
         logger?.debug("Moving \(amount) \(symbol) to BSC")
 
-        let bscPublicKeyHash = try wallet.publicKeyHash(path: networkType == .mainNet ? Wallet.bscMainNetKeyPath : Wallet.bscTestNetKeyPath)
+        let bscPublicKeyHash = try wallet.publicKeyHash(
+            path: networkType == .mainNet
+                ? Wallet.bscMainNetKeyPath
+                : Wallet.bscTestNetKeyPath
+        )
 
         let hash = try await transactionManager.moveToBsc(symbol: symbol, bscPublicKeyHash: bscPublicKeyHash, amount: amount)
         watchOnChain(transaction: hash)
@@ -165,6 +191,8 @@ extension BinanceChainKit {
 }
 
 
+// MARK: IBalanceManagerDelegate
+
 extension BinanceChainKit: IBalanceManagerDelegate {
 
     func didSync(balances: [Balance], latestBlockHeight: Int) {
@@ -181,6 +209,8 @@ extension BinanceChainKit: IBalanceManagerDelegate {
 
 }
 
+// MARK: ITransactionManagerDelegate
+
 extension BinanceChainKit: ITransactionManagerDelegate {
 
     func didSync(transactions: [Transaction]) {
@@ -195,11 +225,19 @@ extension BinanceChainKit: ITransactionManagerDelegate {
 
 extension BinanceChainKit {
 
-    public static func instance(seed: Data, networkType: NetworkType = .mainNet, walletId: String, minLogLevel: Logger.Level = .error) throws -> BinanceChainKit {
+    public static func instance(
+        seed: Data,
+        networkType: NetworkType = .mainNet,
+        walletID: String,
+        minLogLevel: Logger.Level = .error
+    ) throws -> BinanceChainKit {
         let logger = Logger(minLogLevel: minLogLevel)
 
-        let uniqueId = "\(walletId)-\(networkType)"
-        let storage: IStorage = try Storage(databaseDirectoryUrl: dataDirectoryUrl(), databaseFileName: "binance-chain-\(uniqueId)")
+        let uniqueID = "\(walletID)-\(networkType)"
+        let storage: IStorage = try Storage(
+            databaseDirectoryURL: dataDirectoryURL(),
+            databaseFileName: "binance-chain-\(uniqueID)"
+        )
 
         let segWitHelper = Self.segWitHelper(networkType: networkType)
         let wallet = try Self.wallet(seed: seed, segWitHelper: segWitHelper)
@@ -208,10 +246,24 @@ extension BinanceChainKit {
 
         let accountSyncer = AccountSyncer(apiProvider: apiProvider, logger: logger)
         let balanceManager = BalanceManager(storage: storage, accountSyncer: accountSyncer, logger: logger)
-        let transactionManager = TransactionManager(storage: storage, wallet: wallet, apiProvider: apiProvider, accountSyncer: accountSyncer, logger: logger)
+        let transactionManager = TransactionManager(
+            storage: storage,
+            wallet: wallet,
+            apiProvider: apiProvider,
+            accountSyncer: accountSyncer,
+            logger: logger
+        )
         let reachabilityManager = ReachabilityManager()
 
-        let binanceChainKit = BinanceChainKit(wallet: wallet, balanceManager: balanceManager, transactionManager: transactionManager, reachabilityManager: reachabilityManager, segWitHelper: segWitHelper, networkType: networkType, logger: logger)
+        let binanceChainKit = BinanceChainKit(
+            wallet: wallet,
+            balanceManager: balanceManager,
+            transactionManager: transactionManager,
+            reachabilityManager: reachabilityManager,
+            segWitHelper: segWitHelper,
+            networkType: networkType,
+            logger: logger
+        )
         balanceManager.delegate = binanceChainKit
         transactionManager.delegate = binanceChainKit
 
@@ -220,21 +272,21 @@ extension BinanceChainKit {
 
     public static func clear(exceptFor excludedFiles: [String]) throws {
         let fileManager = FileManager.default
-        let fileUrls = try fileManager.contentsOfDirectory(at: dataDirectoryUrl(), includingPropertiesForKeys: nil)
+        let fileURLs = try fileManager.contentsOfDirectory(at: dataDirectoryURL(), includingPropertiesForKeys: nil)
 
-        for filename in fileUrls {
+        for filename in fileURLs {
             if !excludedFiles.contains(where: { filename.lastPathComponent.contains($0) }) {
                 try fileManager.removeItem(at: filename)
             }
         }
     }
 
-    private static func dataDirectoryUrl() throws -> URL {
+    private static func dataDirectoryURL() throws -> URL {
         let fileManager = FileManager.default
 
         let url = try fileManager
-                .url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-                .appendingPathComponent("binance-chain-kit", isDirectory: true)
+            .url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+            .appendingPathComponent("binance-chain-kit", isDirectory: true)
 
         try fileManager.createDirectory(at: url, withIntermediateDirectories: true)
 
@@ -259,21 +311,21 @@ extension BinanceChainKit {
         case syncing
         case notSynced(error: Error)
 
-        public static func ==(lhs: SyncState, rhs: SyncState) -> Bool {
+        public static func == (lhs: SyncState, rhs: SyncState) -> Bool {
             switch (lhs, rhs) {
-            case (.synced, .synced): return true
-            case (.syncing, .syncing): return true
-            case (.notSynced(let lhsError), .notSynced(let rhsError)): return "\(lhsError)" == "\(rhsError)"
-            default: return false
+            case (.synced, .synced): true
+            case (.syncing, .syncing): true
+            case (.notSynced(let lhsError), .notSynced(let rhsError)): "\(lhsError)" == "\(rhsError)"
+            default: false
             }
         }
 
 
         public var description: String {
             switch self {
-            case .synced: return "synced"
-            case .syncing: return "syncing"
-            case .notSynced(let error): return "not synced: \(error)"
+            case .synced: "synced"
+            case .syncing: "syncing"
+            case .notSynced(let error): "not synced: \(error)"
             }
         }
     }
@@ -284,15 +336,15 @@ extension BinanceChainKit {
 
         public var addressPrefix: String {
             switch self {
-            case .mainNet: return "bnb"
-            case .testNet: return "tbnb"
+            case .mainNet: "bnb"
+            case .testNet: "tbnb"
             }
         }
 
         var endpoint: String {
             switch self {
-            case .mainNet: return "https://dex.binance.org"
-            case .testNet: return "https://testnet-dex.binance.org"
+            case .mainNet: "https://dex.binance.org"
+            case .testNet: "https://testnet-dex.binance.org"
             }
         }
     }

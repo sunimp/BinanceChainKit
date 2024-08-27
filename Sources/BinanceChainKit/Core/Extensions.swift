@@ -12,12 +12,12 @@ import SwiftyJSON
 extension String {
 
     var unhexlify: Data {
-        let length = self.count / 2
+        let length = count / 2
         var data = Data(capacity: length)
         for i in 0 ..< length {
-            let j = self.index(self.startIndex, offsetBy: i * 2)
-            let k = self.index(j, offsetBy: 2)
-            let bytes = self[j..<k]
+            let j = index(startIndex, offsetBy: i * 2)
+            let k = index(j, offsetBy: 2)
+            let bytes = self[j ..< k]
             if var byte = UInt8(bytes, radix: 16) {
                 data.append(&byte, count: 1)
             }
@@ -30,7 +30,7 @@ extension String {
 extension Data {
 
     var hexdata: Data {
-        return Data(self.hexlify.utf8)
+        Data(hexlify.utf8)
     }
 
     var hexlify: String {
@@ -52,7 +52,7 @@ extension Int {
     var varint: Data {
         var data = Data()
         var v = UInt64(self)
-        while (v > 127) {
+        while v > 127 {
             data.append(UInt8(v & 0x7f | 0x80))
             v >>= 7
         }
@@ -62,30 +62,28 @@ extension Int {
 
 }
 
-public extension CustomStringConvertible {
+extension CustomStringConvertible {
 
-    var description: String {
-
+    public var description: String {
         // Use reflection to describe the object and its properties
         let name = String(describing: type(of: self))
         let mirror = Mirror(reflecting: self)
-        let properties: [String] = mirror.children.compactMap ({
+        let properties: [String] = mirror.children.compactMap({
             guard let name = $0.label else { return nil }
             if let value = $0.value as? Double { return String(format: "%@: %f", name, value) }
             return String(format: "%@: %@", name, String(describing: $0.value))
         })
         return String(format: "%@ [%@]", name, properties.joined(separator: ", "))
-
     }
 
 }
 
 extension JSON {
 
-    // Handle doubles returned as strings, eg. "199.97207842"
+    /// Handle doubles returned as strings, eg. "199.97207842"
     var doubleString: Double? {
-        guard (self.exists()) else { return nil }
-        return self.doubleValue
+        guard exists() else { return nil }
+        return doubleValue
     }
 
 }
@@ -118,10 +116,10 @@ extension String {
 
 }
 
-extension Dictionary where Key == String, Value == Any {
+extension [String: Any] {
 
     var query: String {
-        let items: [URLQueryItem] = self.compactMap { URLQueryItem(name: $0.key, value: String(describing: $0.value)) }
+        let items: [URLQueryItem] = compactMap { URLQueryItem(name: $0.key, value: String(describing: $0.value)) }
         let url = NSURLComponents()
         url.queryItems = items
         return url.query ?? ""

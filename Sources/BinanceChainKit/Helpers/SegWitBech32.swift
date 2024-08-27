@@ -22,8 +22,8 @@ public class SegWitBech32 {
 
     /// Convert from one power-of-2 number base to another
     private func convertBits(from: Int, to: Int, pad: Bool, idata: Data) throws -> Data {
-        var acc: Int = 0
-        var bits: Int = 0
+        var acc = 0
+        var bits = 0
         let maxv: Int = (1 << to) - 1
         let maxAcc: Int = (1 << (from + to - 1)) - 1
         var odata = Data()
@@ -39,7 +39,7 @@ public class SegWitBech32 {
             if bits != 0 {
                 odata.append(UInt8((acc << (to - bits)) & maxv))
             }
-        } else if (bits >= from || ((acc << (to - bits)) & maxv) != 0) {
+        } else if bits >= from || ((acc << (to - bits)) & maxv) != 0 {
             throw BinanceChainKit.CoderError.bitsConversionFailed
         }
         return odata
@@ -56,7 +56,7 @@ public class SegWitBech32 {
             throw BinanceChainKit.CoderError.checksumSizeTooLow
         }
         let conv = try convertBits(from: 5, to: 8, pad: false, idata: dec.checksum)
-        guard conv.count >= 2 && conv.count <= 40 else {
+        guard conv.count >= 2, conv.count <= 40 else {
             throw BinanceChainKit.CoderError.dataSizeMismatch(conv.count)
         }
         return conv
