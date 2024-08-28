@@ -14,7 +14,7 @@ class TransactionManager {
         case transactionNotIncludedInBlock
     }
 
-    weak var delegate: ITransactionManagerDelegate? = nil
+    weak var delegate: ITransactionManagerDelegate?
 
     private let storage: IStorage
     private let wallet: Wallet
@@ -45,8 +45,8 @@ class TransactionManager {
         fromTransactionHash: String?,
         limit: Int?
     ) -> [Transaction] {
-        var fromAddress: String? = nil
-        var toAddress: String? = nil
+        var fromAddress: String?
+        var toAddress: String?
 
         switch filterType {
         case .incoming: toAddress = wallet.address

@@ -89,14 +89,14 @@ class Parser {
         trade.baseAsset = json["baseAsset"].stringValue
         trade.blockHeight = json["blockHeight"].int ?? json["E"].intValue
         trade.buyFee = json["buyFee"].stringValue
-        trade.buyerID = json["buyerId"].string ?? json["ba"].stringValue
+        trade.buyerId = json["buyerId"].string ?? json["ba"].stringValue
         trade.price = json["price"].string ?? json["p"].stringValue
         trade.quantity = json["quantity"].string ?? json["q"].stringValue
         trade.quoteAsset = json["quoteAsset"].stringValue
         trade.sellFee = json["sellFee"].stringValue
-        trade.sellerID = json["sellerId"].string ?? json["sa"].stringValue
+        trade.sellerId = json["sellerId"].string ?? json["sa"].stringValue
         trade.symbol = json["symbol"].string ?? json["s"].stringValue
-        trade.tradeID = json["tradeId"].string ?? json["t"].stringValue
+        trade.tradeId = json["tradeId"].string ?? json["t"].stringValue
         trade.time = Date(millisecondsSince1970: json["time"].doubleString ?? json["T"].doubleValue)
         return trade
     }
@@ -170,7 +170,7 @@ class Parser {
         tx.confirmBlocks = json["confirmBlocks"].doubleValue
         tx.data = json["data"].stringValue
         tx.fromAddr = json["fromAddr"].stringValue
-        tx.orderID = json["orderId"].string ?? json["order_id"].stringValue
+        tx.orderId = json["orderId"].string ?? json["order_id"].stringValue
         tx.timestamp = json["timeStamp"].string?.toDate() ?? Date()
         tx.toAddr = json["toAddr"].stringValue
         tx.txAge = json["txAge"].doubleValue
@@ -250,9 +250,9 @@ class Parser {
         ticker.bidPrice = json["bidPrice"].doubleString ?? json["b"].doubleValue
         ticker.bidQuantity = json["bidQuantity"].doubleString ?? json["B"].doubleValue
         ticker.count = json["count"].int ?? json["n"].intValue
-        ticker.firstID = json["firstId"].string ?? json["F"].stringValue
+        ticker.firstId = json["firstId"].string ?? json["F"].stringValue
         ticker.highPrice = json["high_price"].doubleString ?? json["h"].doubleValue
-        ticker.lastID = json["lastId"].string ?? json["L"].stringValue
+        ticker.lastId = json["lastId"].string ?? json["L"].stringValue
         ticker.lastPrice = json["lastPrice"].doubleString ?? json["o"].doubleValue
         ticker.lastQuantity = json["lastQuantity"].doubleValue
         ticker.lowPrice = json["lowPrice"].doubleString ?? json["l"].doubleValue
@@ -275,11 +275,11 @@ class Parser {
         order.fee = json["fee"].string ?? json["n"].stringValue
         order.lastExecutedPrice = json["lastExecutedPrice"].string ?? json["L"].stringValue
         order.lastExecuteQuantity = json["lastExecutedQuantity"].string ?? json["l"].stringValue
-        order.orderID = json["orderId"].string ?? json["i"].stringValue
+        order.orderId = json["orderId"].string ?? json["i"].stringValue
         order.owner = json["owner"].stringValue
         order.price = json["price"].doubleString ?? json["p"].doubleValue
         order.symbol = json["symbol"].string ?? json["s"].stringValue
-        order.tradeID = json["tradeId"].string ?? json["t"].stringValue
+        order.tradeId = json["tradeId"].string ?? json["t"].stringValue
         order.transactionHash = json["transactionHash"].stringValue
         let orderCreateTimeValue = json["orderCreateTime"].string ?? json["O"].stringValue
         let transactionTimeValue = json["transactionTime"].string ?? json["T"].stringValue

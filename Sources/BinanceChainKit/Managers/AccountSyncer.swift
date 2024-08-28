@@ -23,7 +23,7 @@ class AccountSyncer {
 
         wallet.accountNumber = account.accountNumber
         wallet.sequence = account.sequence
-        wallet.chainID = nodeInfo.network
+        wallet.chainId = nodeInfo.network
     }
 
     func sync(account: String) async throws -> (NodeInfo, Account) {

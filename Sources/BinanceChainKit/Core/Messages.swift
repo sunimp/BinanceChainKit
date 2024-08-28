@@ -34,7 +34,7 @@ class Message {
     private var type: MessageType = .newOrder
     private var wallet: Wallet
     private var symbol = ""
-    private var orderID = ""
+    private var orderId = ""
     private var orderType: OrderType = .limit
     private var side: Side = .buy
     private var price: Double = 0
@@ -46,7 +46,7 @@ class Message {
     private var toAddress = ""
     private var bscPublicKeyHash = Data()
     private var expireTime: Int64 = 0
-    private var proposalID = 0
+    private var proposalId = 0
     private var voteOption: VoteOption = .no
     private var source: Source = .broadcast
 
@@ -73,14 +73,14 @@ class Message {
         message.price = price
         message.quantity = quantity
         message.timeInForce = timeInForce
-        message.orderID = wallet.nextAvailableOrderID()
+        message.orderId = wallet.nextAvailableOrderId()
         return message
     }
 
-    static func cancelOrder(symbol: String, orderID: String, wallet: Wallet) -> Message {
+    static func cancelOrder(symbol: String, orderId: String, wallet: Wallet) -> Message {
         let message = Message(type: .cancelOrder, wallet: wallet)
         message.symbol = symbol
-        message.orderID = orderID
+        message.orderId = orderId
         return message
     }
 
@@ -122,9 +122,9 @@ class Message {
         return message
     }
 
-    static func vote(proposalID: Int, vote option: VoteOption, wallet: Wallet) -> Message {
+    static func vote(proposalId: Int, vote option: VoteOption, wallet: Wallet) -> Message {
         let message = Message(type: .vote, wallet: wallet)
-        message.proposalID = proposalID
+        message.proposalId = proposalId
         message.voteOption = option
         return message
     }
@@ -171,7 +171,7 @@ class Message {
         case .newOrder:
             var pb = NewOrder()
             pb.sender = wallet.publicKeyHashHex.unhexlify
-            pb.id = orderID
+            pb.id = orderId
             pb.symbol = symbol
             pb.timeinforce = Int64(timeInForce.rawValue)
             pb.ordertype = Int64(orderType.rawValue)
@@ -184,7 +184,7 @@ class Message {
             var pb = CancelOrder()
             pb.symbol = symbol
             pb.sender = wallet.publicKeyHashHex.unhexlify
-            pb.refid = orderID
+            pb.refid = orderId
             return try pb.serializedData()
 
         case .freeze:
@@ -251,7 +251,7 @@ class Message {
 
         case .vote:
             var vote = Vote()
-            vote.proposalID = Int64(proposalID)
+            vote.proposalId = Int64(proposalId)
             vote.voter = wallet.publicKeyHashHex.unhexlify
             vote.option = Int64(voteOption.rawValue)
             return try vote.serializedData()
@@ -272,7 +272,7 @@ class Message {
         case .newOrder:
             String(
                 format: JSON.newOrder,
-                orderID,
+                orderId,
                 orderType.rawValue,
                 price.encoded,
                 quantity.encoded,
@@ -285,7 +285,7 @@ class Message {
         case .cancelOrder:
             String(
                 format: JSON.cancelOrder,
-                orderID,
+                orderId,
                 wallet.address,
                 symbol
             )
@@ -331,7 +331,7 @@ class Message {
             String(
                 format: JSON.vote,
                 voteOption.rawValue,
-                proposalID,
+                proposalId,
                 wallet.address
             )
 
@@ -339,7 +339,7 @@ class Message {
             String(
                 format: JSON.signature,
                 wallet.accountNumber,
-                wallet.chainID,
+                wallet.chainId,
                 memo,
                 json(for: self.type),
                 wallet.sequence,

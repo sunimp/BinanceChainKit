@@ -34,7 +34,7 @@ class Manager {
         let binanceChainKit = try BinanceChainKit.instance(
                 seed: seed,
                 networkType: configuration.networkType,
-                walletID: "walletID",
+                walletId: "walletId",
                 minLogLevel: configuration.minLogLevel
         )
 
@@ -69,7 +69,7 @@ class Manager {
 extension Manager {
 
     func login(words: [String]) throws {
-        try BinanceChainKit.clear(exceptFor: ["walletID"])
+        try BinanceChainKit.clear(exceptFor: ["walletId"])
 
         save(words: words)
         try initKit(words: words)

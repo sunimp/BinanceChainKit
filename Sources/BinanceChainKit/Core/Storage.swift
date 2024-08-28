@@ -14,10 +14,10 @@ import GRDB
 class Storage {
     private let dbPool: DatabasePool
 
-    init(databaseDirectoryURL: URL, databaseFileName: String) {
-        let databaseURL = databaseDirectoryURL.appendingPathComponent("\(databaseFileName).sqlite")
+    init(databaseDirectoryUrl: URL, databaseFileName: String) {
+        let databaseUrl = databaseDirectoryUrl.appendingPathComponent("\(databaseFileName).sqlite")
 
-        dbPool = try! DatabasePool(path: databaseURL.path)
+        dbPool = try! DatabasePool(path: databaseUrl.path)
 
         try? migrator.migrate(dbPool)
     }

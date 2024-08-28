@@ -6,7 +6,7 @@
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/sunimp/BinanceChainKit.Swift.git", .upToNextMajor(from: "2.0.8"))
+    .package(url: "https://github.com/sunimp/BinanceChainKit.Swift.git", .upToNextMajor(from: "2.0.9"))
 ]
 ```
 

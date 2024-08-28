@@ -10,7 +10,7 @@ import Foundation
 import WWToolKit
 
 class BalanceManager {
-    weak var delegate: IBalanceManagerDelegate? = nil
+    weak var delegate: IBalanceManagerDelegate?
 
     private let storage: IStorage
     private let accountSyncer: AccountSyncer

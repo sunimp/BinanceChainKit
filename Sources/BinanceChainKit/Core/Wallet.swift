@@ -20,7 +20,7 @@ class Wallet {
 
     var sequence = 0
     var accountNumber = 0
-    var chainID = ""
+    var chainId = ""
 
     let publicKey: Data
     let address: String
@@ -51,7 +51,7 @@ class Wallet {
         sequence += 1
     }
 
-    func nextAvailableOrderID() -> String {
+    func nextAvailableOrderId() -> String {
         String(format: "%@-%d", publicKeyHashHex.uppercased(), sequence + 1)
     }
 
@@ -80,7 +80,7 @@ extension Wallet: CustomStringConvertible {
             address,
             accountNumber,
             sequence,
-            chainID,
+            chainId,
             address,
             publicKey.hexlify
         )

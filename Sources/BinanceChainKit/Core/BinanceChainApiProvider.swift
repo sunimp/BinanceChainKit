@@ -247,12 +247,12 @@ class BinanceChainApiProvider {
 
     private func trades(
         address: String? = nil,
-        buyerOrderID _: String? = nil,
+        buyerOrderId _: String? = nil,
         end: TimeInterval? = nil,
         height: Double? = nil,
         offset: Int? = nil,
         quoteAsset: String? = nil,
-        sellerOrderID: String? = nil,
+        sellerOrderId: String? = nil,
         side: Side? = nil,
         start: TimeInterval? = nil,
         symbol: String? = nil,
@@ -272,8 +272,8 @@ class BinanceChainApiProvider {
         if let quoteAsset {
             parameters["quoteAsset"] = quoteAsset
         }
-        if let sellerOrderID {
-            parameters["sellerOrderId"] = sellerOrderID
+        if let sellerOrderId {
+            parameters["sellerOrderId"] = sellerOrderId
         }
         if let side {
             parameters["side"] = side.rawValue

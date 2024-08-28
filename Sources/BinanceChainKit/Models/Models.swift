@@ -209,14 +209,14 @@ class Order: CustomStringConvertible {
     var lastExecutedPrice = ""
     var lastExecuteQuantity = ""
     var orderCreateTime = Date()
-    var orderID = ""
+    var orderId = ""
     var owner = ""
     var price: Double = 0
     var side: Side = .buy
     var status: Status = .acknowledge
     var symbol = ""
     var timeInForce: TimeInForce = .immediateOrCancel
-    var tradeID = ""
+    var tradeId = ""
     var transactionHash = ""
     var transactionTime = Date()
     var type: OrderType = .limit
@@ -231,9 +231,9 @@ class TickerStatistics: CustomStringConvertible {
     var bidQuantity: Double = 0
     var closeTime = Date()
     var count = 0
-    var firstID = ""
+    var firstId = ""
     var highPrice: Double = 0
-    var lastID = ""
+    var lastId = ""
     var lastPrice: Double = 0
     var lastQuantity: Double = 0
     var lowPrice: Double = 0
@@ -261,16 +261,16 @@ class Trade: CustomStringConvertible {
     var baseAsset = ""
     var blockHeight = 0
     var buyFee = ""
-    var buyerID = ""
-    var buyerOrderID = ""
+    var buyerId = ""
+    var buyerOrderId = ""
     var price = ""
     var quantity = ""
     var quoteAsset = ""
     var sellFee = ""
-    var sellerID = ""
+    var sellerId = ""
     var symbol = ""
     var time = Date()
-    var tradeID = ""
+    var tradeId = ""
 }
 
 // MARK: - TxPage
@@ -288,7 +288,7 @@ class Tx: CustomStringConvertible {
     var confirmBlocks: Double = 0
     var data = ""
     var fromAddr = ""
-    var orderID = ""
+    var orderId = ""
     var timestamp = Date()
     var toAddr = ""
     var txAge: Double = 0

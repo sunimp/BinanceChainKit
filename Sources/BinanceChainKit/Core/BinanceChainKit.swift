@@ -228,15 +228,15 @@ extension BinanceChainKit {
     public static func instance(
         seed: Data,
         networkType: NetworkType = .mainNet,
-        walletID: String,
+        walletId: String,
         minLogLevel: Logger.Level = .error
     ) throws -> BinanceChainKit {
         let logger = Logger(minLogLevel: minLogLevel)
 
-        let uniqueID = "\(walletID)-\(networkType)"
+        let uniqueId = "\(walletId)-\(networkType)"
         let storage: IStorage = try Storage(
-            databaseDirectoryURL: dataDirectoryURL(),
-            databaseFileName: "binance-chain-\(uniqueID)"
+            databaseDirectoryUrl: dataDirectoryUrl(),
+            databaseFileName: "binance-chain-\(uniqueId)"
         )
 
         let segWitHelper = Self.segWitHelper(networkType: networkType)
@@ -272,16 +272,16 @@ extension BinanceChainKit {
 
     public static func clear(exceptFor excludedFiles: [String]) throws {
         let fileManager = FileManager.default
-        let fileURLs = try fileManager.contentsOfDirectory(at: dataDirectoryURL(), includingPropertiesForKeys: nil)
+        let fileUrls = try fileManager.contentsOfDirectory(at: dataDirectoryUrl(), includingPropertiesForKeys: nil)
 
-        for filename in fileURLs {
+        for filename in fileUrls {
             if !excludedFiles.contains(where: { filename.lastPathComponent.contains($0) }) {
                 try fileManager.removeItem(at: filename)
             }
         }
     }
 
-    private static func dataDirectoryURL() throws -> URL {
+    private static func dataDirectoryUrl() throws -> URL {
         let fileManager = FileManager.default
 
         let url = try fileManager

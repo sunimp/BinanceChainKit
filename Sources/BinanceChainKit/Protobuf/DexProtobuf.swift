@@ -257,7 +257,7 @@ struct Vote {
     // methods supported on all messages.
 
     ///    0xA1CADD36	    // hardcoded, object type prefix in 4 bytes
-    var proposalID: Int64 = 0
+    var proposalId: Int64 = 0
 
     /// address of the voter
     var voter = Data()
@@ -772,7 +772,7 @@ extension Vote: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     mutating func decodeMessage(decoder: inout some SwiftProtobuf.Decoder) throws {
         while let fieldNumber = try decoder.nextFieldNumber() {
             switch fieldNumber {
-            case 1: try decoder.decodeSingularInt64Field(value: &proposalID)
+            case 1: try decoder.decodeSingularInt64Field(value: &proposalId)
             case 2: try decoder.decodeSingularBytesField(value: &voter)
             case 3: try decoder.decodeSingularInt64Field(value: &option)
             default: break
@@ -781,8 +781,8 @@ extension Vote: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     }
 
     func traverse(visitor: inout some SwiftProtobuf.Visitor) throws {
-        if proposalID != 0 {
-            try visitor.visitSingularInt64Field(value: proposalID, fieldNumber: 1)
+        if proposalId != 0 {
+            try visitor.visitSingularInt64Field(value: proposalId, fieldNumber: 1)
         }
         if !voter.isEmpty {
             try visitor.visitSingularBytesField(value: voter, fieldNumber: 2)
@@ -794,7 +794,7 @@ extension Vote: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     }
 
     static func == (lhs: Vote, rhs: Vote) -> Bool {
-        if lhs.proposalID != rhs.proposalID { return false }
+        if lhs.proposalId != rhs.proposalId { return false }
         if lhs.voter != rhs.voter { return false }
         if lhs.option != rhs.option { return false }
         if lhs.unknownFields != rhs.unknownFields { return false }
@@ -821,7 +821,7 @@ extension TransferOut: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
             case 2: try decoder.decodeSingularBytesField(value: &to)
 
             case 3:
-                var amount: Send.Token? = nil
+                var amount: Send.Token?
                 try decoder.decodeSingularMessageField(value: &amount)
                 amount.flatMap { self.amount = $0 }
 
