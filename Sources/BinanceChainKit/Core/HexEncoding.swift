@@ -1,8 +1,7 @@
 //
 //  HexEncoding.swift
-//  BinanceChainKit
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2019/7/29.
 //
 
 import Foundation
@@ -10,12 +9,17 @@ import Foundation
 import Alamofire
 
 struct HexEncoding: ParameterEncoding {
+    // MARK: Properties
 
     private let data: Data
+
+    // MARK: Lifecycle
 
     init(data: Data) {
         self.data = data
     }
+
+    // MARK: Functions
 
     func encode(_ urlRequest: URLRequestConvertible, with _: Parameters?) throws -> URLRequest {
         var urlRequest = try urlRequest.asURLRequest()
@@ -23,5 +27,4 @@ struct HexEncoding: ParameterEncoding {
         urlRequest.httpBody = data.hexdata
         return urlRequest
     }
-
 }

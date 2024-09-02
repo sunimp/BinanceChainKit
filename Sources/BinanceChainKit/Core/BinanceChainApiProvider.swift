@@ -1,8 +1,7 @@
 //
 //  BinanceChainApiProvider.swift
-//  BinanceChainKit
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2019/7/29.
 //
 
 import Foundation
@@ -15,28 +14,7 @@ import WWToolKit
 // https://binance-chain.github.io/api-reference/dex-api/paths.html
 
 class BinanceChainApiProvider {
-
-    enum Path: String {
-        case time
-        case nodeInfo = "node-info"
-        case validators
-        case peers
-        case account
-        case sequence
-        case tx
-        case tokens
-        case markets
-        case fees
-        case depth
-        case broadcast
-        case klines
-        case closedOrders = "orders/closed"
-        case openOrders = "orders/open"
-        case orders
-        case ticker = "ticker/24hr"
-        case trades
-        case transactions
-    }
+    // MARK: Nested Types
 
     public class Response {
         public var sequence = 0
@@ -64,14 +42,81 @@ class BinanceChainApiProvider {
         public var transactions = Transactions()
     }
 
+    enum Path: String {
+        case time
+        case nodeInfo = "node-info"
+        case validators
+        case peers
+        case account
+        case sequence
+        case tx
+        case tokens
+        case markets
+        case fees
+        case depth
+        case broadcast
+        case klines
+        case closedOrders = "orders/closed"
+        case openOrders = "orders/open"
+        case orders
+        case ticker = "ticker/24hr"
+        case trades
+        case transactions
+    }
+
+    // MARK: Properties
+
     private let networkManager: NetworkManager
     private var endpoint: String
+
+    // MARK: Lifecycle
 
     init(networkManager: NetworkManager, endpoint: String) {
         self.networkManager = networkManager
         self.endpoint = endpoint
     }
 
+    // MARK: Functions
+
+    // MARK: - Utils
+
+    @discardableResult
+    func api(
+        path: Path,
+        method: HTTPMethod = .get,
+        parameters: Parameters = [:],
+        body _: Data? = nil,
+        parser: Parser
+    ) async throws
+        -> BinanceChainApiProvider.Response {
+        try await api(path: path.rawValue, method: method, parameters: parameters, parser: parser)
+    }
+
+    func api(
+        path: String,
+        method: HTTPMethod = .get,
+        parameters: Parameters = [:],
+        body: Data? = nil,
+        parser: Parser
+    ) async throws
+        -> BinanceChainApiProvider.Response {
+        var encoding: ParameterEncoding = URLEncoding.default
+        if let body {
+            encoding = HexEncoding(data: body)
+        }
+        let url = String(format: "%@/api/v1/%@", endpoint, path)
+
+        let data = try await networkManager.fetchData(
+            url: url,
+            method: method,
+            parameters: parameters,
+            encoding: encoding,
+            interceptor: RateLimitRetrier(),
+            responseCacherBehavior: .doNotCache
+        )
+
+        return try parser.parse(data: data)
+    }
 
     private func time() async throws {
         try await api(path: .time, method: .get, parser: TimesParser())
@@ -183,7 +228,8 @@ class BinanceChainApiProvider {
         status: Status? = nil,
         symbol: String? = nil,
         total: Total = .required
-    ) async throws -> OrderList {
+    ) async throws
+        -> OrderList {
         var parameters: Parameters = [:]
         parameters["address"] = address
         parameters["total"] = total.rawValue
@@ -218,7 +264,8 @@ class BinanceChainApiProvider {
         offset: Int? = nil,
         symbol: String? = nil,
         total: Total = .required
-    ) async throws -> OrderList {
+    ) async throws
+        -> OrderList {
         var parameters: Parameters = [:]
         parameters["address"] = address
         parameters["total"] = total.rawValue
@@ -247,12 +294,12 @@ class BinanceChainApiProvider {
 
     private func trades(
         address: String? = nil,
-        buyerOrderId _: String? = nil,
+        buyerOrderID _: String? = nil,
         end: TimeInterval? = nil,
         height: Double? = nil,
         offset: Int? = nil,
         quoteAsset: String? = nil,
-        sellerOrderId: String? = nil,
+        sellerOrderID: String? = nil,
         side: Side? = nil,
         start: TimeInterval? = nil,
         symbol: String? = nil,
@@ -272,8 +319,8 @@ class BinanceChainApiProvider {
         if let quoteAsset {
             parameters["quoteAsset"] = quoteAsset
         }
-        if let sellerOrderId {
-            parameters["sellerOrderId"] = sellerOrderId
+        if let sellerOrderID {
+            parameters["sellerOrderId"] = sellerOrderID
         }
         if let side {
             parameters["side"] = side.rawValue
@@ -300,7 +347,8 @@ class BinanceChainApiProvider {
         startTime: TimeInterval? = nil,
         txAsset: String? = nil,
         txType: TxType? = nil
-    ) async throws -> Transactions {
+    ) async throws
+        -> Transactions {
         var parameters: Parameters = [:]
         parameters["address"] = address
         if let blockHeight {
@@ -328,7 +376,8 @@ class BinanceChainApiProvider {
             parameters["txType"] = txType.rawValue
         }
 
-        return try await api(path: .transactions, method: .get, parameters: parameters, parser: TransactionsParser()).transactions
+        return try await api(path: .transactions, method: .get, parameters: parameters, parser: TransactionsParser())
+            .transactions
     }
 
     private func broadcast(message: Message) async throws -> String {
@@ -344,59 +393,22 @@ class BinanceChainApiProvider {
 
         return transaction.hash
     }
-
-    // MARK: - Utils
-
-    @discardableResult
-    func api(
-        path: Path,
-        method: HTTPMethod = .get,
-        parameters: Parameters = [:],
-        body _: Data? = nil,
-        parser: Parser
-    ) async throws -> BinanceChainApiProvider.Response {
-        try await api(path: path.rawValue, method: method, parameters: parameters, parser: parser)
-    }
-
-    func api(
-        path: String,
-        method: HTTPMethod = .get,
-        parameters: Parameters = [:],
-        body: Data? = nil,
-        parser: Parser
-    ) async throws -> BinanceChainApiProvider.Response {
-        var encoding: ParameterEncoding = URLEncoding.default
-        if let body {
-            encoding = HexEncoding(data: body)
-        }
-        let url = String(format: "%@/api/v1/%@", endpoint, path)
-
-        let data = try await networkManager.fetchData(
-            url: url,
-            method: method,
-            parameters: parameters,
-            encoding: encoding,
-            interceptor: RateLimitRetrier(),
-            responseCacherBehavior: .doNotCache
-        )
-
-        return try parser.parse(data: data)
-    }
-
 }
 
 // MARK: RequestInterceptor
 
 extension BinanceChainApiProvider: RequestInterceptor {
-
     class RateLimitRetrier: RequestInterceptor {
+        // MARK: Properties
+
         private var attempt = 0
 
-        func retry(_: Request, for _: Session, dueTo error: Error, completion: @escaping (RetryResult) -> ()) {
+        // MARK: Functions
+
+        func retry(_: Request, for _: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
             if
-                let afError = error as? AFError, case .responseValidationFailed(let reason) = afError,
-                case .unacceptableStatusCode(let code) = reason, code == 429
-            {
+                let afError = error as? AFError, case let .responseValidationFailed(reason) = afError,
+                case let .unacceptableStatusCode(code) = reason, code == 429 {
                 completion(resolveResult())
             } else {
                 completion(.doNotRetry)
@@ -406,26 +418,28 @@ extension BinanceChainApiProvider: RequestInterceptor {
         private func resolveResult() -> RetryResult {
             attempt += 1
 
-            if attempt == 1 { return .retryWithDelay(1) }
-            if attempt == 2 { return .retryWithDelay(3) }
+            if attempt == 1 {
+                return .retryWithDelay(1)
+            }
+            if attempt == 2 {
+                return .retryWithDelay(3)
+            }
 
             return .doNotRetry
         }
-
     }
-
 }
 
 // MARK: IApiProvider
 
 extension BinanceChainApiProvider: IApiProvider {
-
     func nodeInfo() async throws -> NodeInfo {
         try await api(path: .nodeInfo, method: .get, parser: NodeInfoParser()).nodeInfo
     }
 
     func transactions(account: String, limit: Int, startTime: TimeInterval) async throws -> [Tx] {
-        try await transactions(address: account, limit: Limit(rawValue: limit), startTime: startTime, txType: .transfer).tx
+        try await transactions(address: account, limit: Limit(rawValue: limit), startTime: startTime, txType: .transfer)
+            .tx
     }
 
     func account(for address: String) async throws -> Account {
@@ -437,9 +451,8 @@ extension BinanceChainApiProvider: IApiProvider {
                 return Account()
             }
             if
-                let afError = error as? AFError, case .responseValidationFailed(let reason) = afError,
-                case .unacceptableStatusCode(let code) = reason, code == 404
-            {
+                let afError = error as? AFError, case let .responseValidationFailed(reason) = afError,
+                case let .unacceptableStatusCode(code) = reason, code == 404 {
                 // New account
                 return Account()
             }
@@ -459,7 +472,8 @@ extension BinanceChainApiProvider: IApiProvider {
         amount: Double,
         expireTime: Int64,
         wallet: Wallet
-    ) async throws -> String {
+    ) async throws
+        -> String {
         let message = Message.transferOut(
             symbol: symbol,
             bscPublicKeyHash: bscPublicKeyHash,
@@ -474,5 +488,4 @@ extension BinanceChainApiProvider: IApiProvider {
         let transaction = try await tx(hash: hash)
         return Int(transaction.height) ?? 0
     }
-
 }

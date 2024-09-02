@@ -1,8 +1,7 @@
 //
 //  Models.swift
-//  BinanceChainKit
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2019/7/29.
 //
 
 import Foundation
@@ -209,14 +208,14 @@ class Order: CustomStringConvertible {
     var lastExecutedPrice = ""
     var lastExecuteQuantity = ""
     var orderCreateTime = Date()
-    var orderId = ""
+    var orderID = ""
     var owner = ""
     var price: Double = 0
     var side: Side = .buy
     var status: Status = .acknowledge
     var symbol = ""
     var timeInForce: TimeInForce = .immediateOrCancel
-    var tradeId = ""
+    var tradeID = ""
     var transactionHash = ""
     var transactionTime = Date()
     var type: OrderType = .limit
@@ -231,9 +230,9 @@ class TickerStatistics: CustomStringConvertible {
     var bidQuantity: Double = 0
     var closeTime = Date()
     var count = 0
-    var firstId = ""
+    var firstID = ""
     var highPrice: Double = 0
-    var lastId = ""
+    var lastID = ""
     var lastPrice: Double = 0
     var lastQuantity: Double = 0
     var lowPrice: Double = 0
@@ -261,16 +260,16 @@ class Trade: CustomStringConvertible {
     var baseAsset = ""
     var blockHeight = 0
     var buyFee = ""
-    var buyerId = ""
-    var buyerOrderId = ""
+    var buyerID = ""
+    var buyerOrderID = ""
     var price = ""
     var quantity = ""
     var quoteAsset = ""
     var sellFee = ""
-    var sellerId = ""
+    var sellerID = ""
     var symbol = ""
     var time = Date()
-    var tradeId = ""
+    var tradeID = ""
 }
 
 // MARK: - TxPage
@@ -288,7 +287,7 @@ class Tx: CustomStringConvertible {
     var confirmBlocks: Double = 0
     var data = ""
     var fromAddr = ""
-    var orderId = ""
+    var orderID = ""
     var timestamp = Date()
     var toAddr = ""
     var txAge: Double = 0

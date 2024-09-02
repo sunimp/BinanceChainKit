@@ -1,8 +1,7 @@
 //
 //  TransactionFilterType.swift
-//  BinanceChainKit
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/9/6.
 //
 
 import Foundation

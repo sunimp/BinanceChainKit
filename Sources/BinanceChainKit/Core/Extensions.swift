@@ -1,8 +1,7 @@
 //
 //  Extensions.swift
-//  BinanceChainKit
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2019/7/29.
 //
 
 import Foundation
@@ -10,7 +9,6 @@ import Foundation
 import SwiftyJSON
 
 extension String {
-
     var unhexlify: Data {
         let length = count / 2
         var data = Data(capacity: length)
@@ -24,11 +22,9 @@ extension String {
         }
         return data
     }
-
 }
 
 extension Data {
-
     var hexdata: Data {
         Data(hexlify.utf8)
     }
@@ -44,60 +40,56 @@ extension Data {
         }
         return String(utf16CodeUnits: hexChars, count: hexChars.count)
     }
-
 }
 
 extension Int {
-
     var varint: Data {
         var data = Data()
         var v = UInt64(self)
         while v > 127 {
-            data.append(UInt8(v & 0x7f | 0x80))
+            data.append(UInt8(v & 0x7F | 0x80))
             v >>= 7
         }
         data.append(UInt8(v))
         return data
     }
-
 }
 
 extension CustomStringConvertible {
-
     public var description: String {
         // Use reflection to describe the object and its properties
         let name = String(describing: type(of: self))
         let mirror = Mirror(reflecting: self)
-        let properties: [String] = mirror.children.compactMap({
-            guard let name = $0.label else { return nil }
-            if let value = $0.value as? Double { return String(format: "%@: %f", name, value) }
+        let properties: [String] = mirror.children.compactMap {
+            guard let name = $0.label else {
+                return nil
+            }
+            if let value = $0.value as? Double {
+                return String(format: "%@: %f", name, value)
+            }
             return String(format: "%@: %@", name, String(describing: $0.value))
-        })
+        }
         return String(format: "%@ [%@]", name, properties.joined(separator: ", "))
     }
-
 }
 
 extension JSON {
-
     /// Handle doubles returned as strings, eg. "199.97207842"
     var doubleString: Double? {
-        guard exists() else { return nil }
+        guard exists() else {
+            return nil
+        }
         return doubleValue
     }
-
 }
 
 extension Date {
-
     init(millisecondsSince1970: Double) {
         self.init(timeIntervalSince1970: millisecondsSince1970 / 1000)
     }
-
 }
 
 extension String {
-
     func toDateFromMilliseconds() -> Date? {
         guard let milliSeconds = Double(self) else {
             return nil
@@ -113,16 +105,13 @@ extension String {
 
         return formatter.date(from: self)
     }
-
 }
 
 extension [String: Any] {
-
     var query: String {
         let items: [URLQueryItem] = compactMap { URLQueryItem(name: $0.key, value: String(describing: $0.value)) }
         let url = NSURLComponents()
         url.queryItems = items
         return url.query ?? ""
     }
-
 }

@@ -1,13 +1,14 @@
 //
 //  TransactionInfo.swift
-//  BinanceChainKit
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2019/7/29.
 //
 
 import Foundation
 
 public class TransactionInfo {
+    // MARK: Properties
+
     public let hash: String
     public let blockHeight: Int
     public let date: Date
@@ -17,6 +18,8 @@ public class TransactionInfo {
     public let fee: Decimal
     public let symbol: String
     public let memo: String?
+
+    // MARK: Lifecycle
 
     init(transaction: Transaction) {
         hash = transaction.hash
@@ -29,5 +32,4 @@ public class TransactionInfo {
         symbol = transaction.symbol
         memo = transaction.memo
     }
-
 }

@@ -1,8 +1,7 @@
 //
 //  Wallet.swift
-//  BinanceChainKit
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2019/7/29.
 //
 
 import Foundation
@@ -13,14 +12,17 @@ import WWCryptoKit
 // MARK: - Wallet
 
 class Wallet {
+    // MARK: Static Properties
 
     static let bcPrivateKeyPath = "m/44'/714'/0'/0/0"
     static let bscMainNetKeyPath = "m/44'/60'/0'/0/0"
     static let bscTestNetKeyPath = "m/44'/1'/0'/0/0"
 
+    // MARK: Properties
+
     var sequence = 0
     var accountNumber = 0
-    var chainId = ""
+    var chainID = ""
 
     let publicKey: Data
     let address: String
@@ -28,6 +30,14 @@ class Wallet {
     private let hdWallet: HDWallet
     private let publicKeyHash: Data
     private let segWitHelper: SegWitBech32
+
+    // MARK: Computed Properties
+
+    var publicKeyHashHex: String {
+        publicKeyHash.hexlify
+    }
+
+    // MARK: Lifecycle
 
     init(hdWallet: HDWallet, segWitHelper: SegWitBech32) throws {
         self.segWitHelper = segWitHelper
@@ -38,6 +48,8 @@ class Wallet {
         publicKeyHash = Crypto.ripeMd160Sha256(publicKey)
         address = try segWitHelper.encode(program: publicKeyHash)
     }
+
+    // MARK: Functions
 
     func publicKeyHash(path: String) throws -> Data {
         let privateKey = try hdWallet.privateKey(path: path).raw
@@ -51,12 +63,8 @@ class Wallet {
         sequence += 1
     }
 
-    func nextAvailableOrderId() -> String {
+    func nextAvailableOrderID() -> String {
         String(format: "%@-%d", publicKeyHashHex.uppercased(), sequence + 1)
-    }
-
-    var publicKeyHashHex: String {
-        publicKeyHash.hexlify
     }
 
     func publicKeyHash(fromAddress address: String) throws -> Data {
@@ -65,25 +73,26 @@ class Wallet {
 
     func sign(message: Data) throws -> Data {
         let hash = Crypto.sha256(message)
-        return try Crypto.sign(data: hash, privateKey: try hdWallet.privateKey(path: Wallet.bcPrivateKeyPath).raw, compact: true)
+        return try Crypto.sign(
+            data: hash,
+            privateKey: hdWallet.privateKey(path: Wallet.bcPrivateKeyPath).raw,
+            compact: true
+        )
     }
-
 }
 
 // MARK: CustomStringConvertible
 
 extension Wallet: CustomStringConvertible {
-
     var description: String {
         String(
             format: "Wallet [address=%@ accountNumber=%d, sequence=%d, chain_id=%@, account=%@, publicKey=%@]",
             address,
             accountNumber,
             sequence,
-            chainId,
+            chainID,
             address,
             publicKey.hexlify
         )
     }
-
 }

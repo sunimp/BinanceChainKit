@@ -1,8 +1,7 @@
 //
 //  Transaction.swift
-//  BinanceChainKit
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2019/7/30.
 //
 
 import Foundation
@@ -10,7 +9,31 @@ import Foundation
 import GRDB
 
 class Transaction: Record {
+    // MARK: Nested Types
+
+    enum Columns: String, ColumnExpression {
+        case hash
+        case blockNumber
+        case date
+        case from
+        case to
+        case amount
+        case symbol
+        case fee
+        case memo
+    }
+
+    // MARK: Static Properties
+
     static let decimal = 8 // 8-digit decimals
+
+    // MARK: Overridden Properties
+
+    override public class var databaseTableName: String {
+        "transactions"
+    }
+
+    // MARK: Properties
 
     let hash: String
     let blockHeight: Int
@@ -22,6 +45,7 @@ class Transaction: Record {
     let symbol: String
     let memo: String?
 
+    // MARK: Lifecycle
 
     init?(tx: Tx) {
         guard
@@ -44,22 +68,6 @@ class Transaction: Record {
         super.init()
     }
 
-    override public class var databaseTableName: String {
-        "transactions"
-    }
-
-    enum Columns: String, ColumnExpression {
-        case hash
-        case blockNumber
-        case date
-        case from
-        case to
-        case amount
-        case symbol
-        case fee
-        case memo
-    }
-
     required init(row: Row) throws {
         hash = row[Columns.hash]
         blockHeight = row[Columns.blockNumber]
@@ -74,6 +82,8 @@ class Transaction: Record {
         try super.init(row: row)
     }
 
+    // MARK: Overridden Functions
+
     override public func encode(to container: inout PersistenceContainer) throws {
         container[Columns.hash] = hash
         container[Columns.blockNumber] = blockHeight
@@ -86,6 +96,8 @@ class Transaction: Record {
         container[Columns.memo] = memo
     }
 
+    // MARK: Static Functions
+
     private static func decimalValue(of int64: Int64) -> Decimal {
         Decimal(sign: .plus, exponent: -decimal, significand: Decimal(int64))
     }
@@ -93,5 +105,4 @@ class Transaction: Record {
     private static func int64Value(of decimalValue: Decimal) -> Int64 {
         Int64(truncating: Decimal(sign: .plus, exponent: decimal, significand: decimalValue) as NSNumber)
     }
-
 }

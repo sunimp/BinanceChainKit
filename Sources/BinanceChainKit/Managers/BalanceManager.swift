@@ -1,8 +1,7 @@
 //
 //  BalanceManager.swift
-//  BinanceChainKit
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2019/7/30.
 //
 
 import Foundation
@@ -10,11 +9,21 @@ import Foundation
 import WWToolKit
 
 class BalanceManager {
+    // MARK: Properties
+
     weak var delegate: IBalanceManagerDelegate?
 
     private let storage: IStorage
     private let accountSyncer: AccountSyncer
     private let logger: Logger?
+
+    // MARK: Computed Properties
+
+    var latestBlock: LatestBlock? {
+        storage.latestBlock
+    }
+
+    // MARK: Lifecycle
 
     init(storage: IStorage, accountSyncer: AccountSyncer, logger: Logger? = nil) {
         self.storage = storage
@@ -22,9 +31,7 @@ class BalanceManager {
         self.logger = logger
     }
 
-    var latestBlock: LatestBlock? {
-        storage.latestBlock
-    }
+    // MARK: Functions
 
     func balance(symbol: String) -> Balance? {
         storage.balance(symbol: symbol)
@@ -45,7 +52,10 @@ class BalanceManager {
             .debug(
                 "NodeInfo received with network: \(nodeInfo.network); latestBlockHeight: \(String(describing: nodeInfo.syncInfo["latest_block_height"]))"
             )
-        logger?.debug("Balances received for \(account.balances.map { "\($0.symbol): \($0.free)" }.joined(separator: ", "))")
+        logger?
+            .debug(
+                "Balances received for \(account.balances.map { "\($0.symbol): \($0.free)" }.joined(separator: ", "))"
+            )
 
         let oldBalances = storage.allBalances()
         let balances = account.balances.map { Balance(symbol: $0.symbol, amount: $0.free) }
@@ -68,5 +78,4 @@ class BalanceManager {
         storage.save(latestBlock: latestBlock)
         delegate?.didSync(balances: balances + toRemove, latestBlockHeight: latestBlock.height)
     }
-
 }

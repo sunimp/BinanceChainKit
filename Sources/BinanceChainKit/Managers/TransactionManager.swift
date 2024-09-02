@@ -1,8 +1,7 @@
 //
 //  TransactionManager.swift
-//  BinanceChainKit
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2019/7/30.
 //
 
 import Foundation
@@ -10,9 +9,13 @@ import Foundation
 import WWToolKit
 
 class TransactionManager {
+    // MARK: Nested Types
+
     enum TransactionManagerError: Error {
         case transactionNotIncludedInBlock
     }
+
+    // MARK: Properties
 
     weak var delegate: ITransactionManagerDelegate?
 
@@ -31,6 +34,8 @@ class TransactionManager {
         day: 7
     ).date!
 
+    // MARK: Lifecycle
+
     init(storage: IStorage, wallet: Wallet, apiProvider: IApiProvider, accountSyncer: AccountSyncer, logger: Logger?) {
         self.storage = storage
         self.wallet = wallet
@@ -39,12 +44,15 @@ class TransactionManager {
         self.logger = logger
     }
 
+    // MARK: Functions
+
     func transactions(
         symbol: String,
         filterType: TransactionFilterType?,
         fromTransactionHash: String?,
         limit: Int?
-    ) -> [Transaction] {
+    )
+        -> [Transaction] {
         var fromAddress: String?
         var toAddress: String?
 
@@ -75,33 +83,6 @@ class TransactionManager {
             try await syncTransactionsPartially(startTime: syncedUntilTime.timeIntervalSince1970)
         } catch {
             logger?.error("TransactionManager sync failure: \(error)")
-        }
-    }
-
-    private func syncTransactionsPartially(startTime: TimeInterval) async throws {
-        let txs = try await apiProvider.transactions(account: wallet.address, limit: 1000, startTime: startTime)
-
-        logger?.debug("\(txs.count) transactions received: [\(txs.map { $0.txHash }.joined(separator: ", "))]")
-
-        let transactions = txs.compactMap { Transaction(tx: $0) }
-        let currentTime = Date().timeIntervalSince1970 - 60
-
-        let syncedUntil: TimeInterval =
-            if transactions.count >= 1000, let lastTransaction = transactions.last {
-                lastTransaction.date.timeIntervalSince1970
-            } else {
-                min(startTime + windowTime, currentTime)
-            }
-
-        storage.save(syncState: SyncState(transactionSyncedUntilTime: syncedUntil))
-
-        if !transactions.isEmpty {
-            storage.save(transactions: transactions)
-            delegate?.didSync(transactions: transactions)
-        }
-
-        if syncedUntil < currentTime {
-            try await syncTransactionsPartially(startTime: syncedUntil)
         }
     }
 
@@ -136,7 +117,7 @@ class TransactionManager {
 
         guard blockHeight > 0 else {
             logger?.verbose("Transaction not in block yet")
-            try await Task.sleep(nanoseconds: 1_000_000_000)
+            try await Task.sleep(nanoseconds: 1000000000)
 
             return try await self.blockHeight(forTransaction: hash, retriesCount: retriesCount + 1)
         }
@@ -146,4 +127,30 @@ class TransactionManager {
         return blockHeight
     }
 
+    private func syncTransactionsPartially(startTime: TimeInterval) async throws {
+        let txs = try await apiProvider.transactions(account: wallet.address, limit: 1000, startTime: startTime)
+
+        logger?.debug("\(txs.count) transactions received: [\(txs.map { $0.txHash }.joined(separator: ", "))]")
+
+        let transactions = txs.compactMap { Transaction(tx: $0) }
+        let currentTime = Date().timeIntervalSince1970 - 60
+
+        let syncedUntil: TimeInterval =
+            if transactions.count >= 1000, let lastTransaction = transactions.last {
+                lastTransaction.date.timeIntervalSince1970
+            } else {
+                min(startTime + windowTime, currentTime)
+            }
+
+        storage.save(syncState: SyncState(transactionSyncedUntilTime: syncedUntil))
+
+        if !transactions.isEmpty {
+            storage.save(transactions: transactions)
+            delegate?.didSync(transactions: transactions)
+        }
+
+        if syncedUntil < currentTime {
+            try await syncTransactionsPartially(startTime: syncedUntil)
+        }
+    }
 }

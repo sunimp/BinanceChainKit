@@ -1,8 +1,7 @@
 //
 //  Storage.swift
-//  BinanceChainKit
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2019/7/30.
 //
 
 import Foundation
@@ -12,15 +11,11 @@ import GRDB
 // MARK: - Storage
 
 class Storage {
+    // MARK: Properties
+
     private let dbPool: DatabasePool
 
-    init(databaseDirectoryUrl: URL, databaseFileName: String) {
-        let databaseUrl = databaseDirectoryUrl.appendingPathComponent("\(databaseFileName).sqlite")
-
-        dbPool = try! DatabasePool(path: databaseUrl.path)
-
-        try? migrator.migrate(dbPool)
-    }
+    // MARK: Computed Properties
 
     var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
@@ -73,12 +68,20 @@ class Storage {
         return migrator
     }
 
+    // MARK: Lifecycle
+
+    init(databaseDirectoryURL: URL, databaseFileName: String) {
+        let databaseURL = databaseDirectoryURL.appendingPathComponent("\(databaseFileName).sqlite")
+
+        dbPool = try! DatabasePool(path: databaseURL.path)
+
+        try? migrator.migrate(dbPool)
+    }
 }
 
 // MARK: IStorage
 
 extension Storage: IStorage {
-
     var latestBlock: LatestBlock? {
         try? dbPool.read { db in
             try LatestBlock.fetchOne(db)
@@ -145,7 +148,8 @@ extension Storage: IStorage {
         toAddress: String?,
         fromTransactionHash: String?,
         limit: Int?
-    ) -> [Transaction] {
+    )
+        -> [Transaction] {
         try! dbPool.read { db in
             var request = Transaction.filter(Transaction.Columns.symbol == symbol)
 
@@ -159,8 +163,7 @@ extension Storage: IStorage {
 
             if
                 let transactionHash = fromTransactionHash,
-                let transaction = try Transaction.filter(Transaction.Columns.hash == transactionHash).fetchOne(db)
-            {
+                let transaction = try Transaction.filter(Transaction.Columns.hash == transactionHash).fetchOne(db) {
                 request = request.filter(Transaction.Columns.date < transaction.date)
             }
 
@@ -174,8 +177,8 @@ extension Storage: IStorage {
 
     func transaction(symbol: String, hash: String) -> Transaction? {
         try? dbPool.read { db in
-            try Transaction.filter(Transaction.Columns.symbol == symbol && Transaction.Columns.hash == hash).fetchOne(db)
+            try Transaction.filter(Transaction.Columns.symbol == symbol && Transaction.Columns.hash == hash)
+                .fetchOne(db)
         }
     }
-
 }

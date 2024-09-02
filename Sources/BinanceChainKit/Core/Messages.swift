@@ -1,8 +1,7 @@
 //
-//  Message.swift
-//  BinanceChainKit
+//  Messages.swift
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2019/7/29.
 //
 
 import Foundation
@@ -12,6 +11,7 @@ import SwiftProtobuf
 // MARK: - Message
 
 class Message {
+    // MARK: Nested Types
 
     private enum MessageType: String {
         case newOrder = "CE6DC043"
@@ -31,10 +31,12 @@ class Message {
         case broadcast = 1
     }
 
+    // MARK: Properties
+
     private var type: MessageType = .newOrder
     private var wallet: Wallet
     private var symbol = ""
-    private var orderId = ""
+    private var orderID = ""
     private var orderType: OrderType = .limit
     private var side: Side = .buy
     private var price: Double = 0
@@ -46,9 +48,11 @@ class Message {
     private var toAddress = ""
     private var bscPublicKeyHash = Data()
     private var expireTime: Int64 = 0
-    private var proposalId = 0
+    private var proposalID = 0
     private var voteOption: VoteOption = .no
     private var source: Source = .broadcast
+
+    // MARK: Lifecycle
 
     // MARK: - Constructors
 
@@ -56,6 +60,8 @@ class Message {
         self.type = type
         self.wallet = wallet
     }
+
+    // MARK: Static Functions
 
     static func newOrder(
         symbol: String,
@@ -65,7 +71,8 @@ class Message {
         quantity: Double,
         timeInForce: TimeInForce,
         wallet: Wallet
-    ) -> Message {
+    )
+        -> Message {
         let message = Message(type: .newOrder, wallet: wallet)
         message.symbol = symbol
         message.orderType = orderType
@@ -73,14 +80,14 @@ class Message {
         message.price = price
         message.quantity = quantity
         message.timeInForce = timeInForce
-        message.orderId = wallet.nextAvailableOrderId()
+        message.orderID = wallet.nextAvailableOrderID()
         return message
     }
 
-    static func cancelOrder(symbol: String, orderId: String, wallet: Wallet) -> Message {
+    static func cancelOrder(symbol: String, orderID: String, wallet: Wallet) -> Message {
         let message = Message(type: .cancelOrder, wallet: wallet)
         message.symbol = symbol
-        message.orderId = orderId
+        message.orderID = orderID
         return message
     }
 
@@ -98,7 +105,14 @@ class Message {
         return message
     }
 
-    static func transfer(symbol: String, amount: Double, to address: String, memo: String = "", wallet: Wallet) -> Message {
+    static func transfer(
+        symbol: String,
+        amount: Double,
+        to address: String,
+        memo: String = "",
+        wallet: Wallet
+    )
+        -> Message {
         let message = Message(type: .transfer, wallet: wallet)
         message.symbol = symbol
         message.amount = amount
@@ -113,7 +127,8 @@ class Message {
         amount: Double,
         expireTime: Int64,
         wallet: Wallet
-    ) -> Message {
+    )
+        -> Message {
         let message = Message(type: .transferOut, wallet: wallet)
         message.symbol = symbol
         message.amount = amount
@@ -122,12 +137,14 @@ class Message {
         return message
     }
 
-    static func vote(proposalId: Int, vote option: VoteOption, wallet: Wallet) -> Message {
+    static func vote(proposalID: Int, vote option: VoteOption, wallet: Wallet) -> Message {
         let message = Message(type: .vote, wallet: wallet)
-        message.proposalId = proposalId
+        message.proposalID = proposalID
         message.voteOption = option
         return message
     }
+
+    // MARK: Functions
 
     // MARK: - Public
 
@@ -135,7 +152,7 @@ class Message {
         // Generate encoded message
         var message = Data()
         message.append(type.rawValue.unhexlify)
-        message.append(try body(for: type))
+        try message.append(body(for: type))
 
         // Generate signature
         let signature = try body(for: .signature)
@@ -151,7 +168,7 @@ class Message {
         // Prefix length and stdtx type
         var content = Data()
         content.append(MessageType.stdtx.rawValue.unhexlify)
-        content.append(try stdtx.serializedData())
+        try content.append(stdtx.serializedData())
 
         // Complete Standard Transaction
         var transaction = Data()
@@ -171,7 +188,7 @@ class Message {
         case .newOrder:
             var pb = NewOrder()
             pb.sender = wallet.publicKeyHashHex.unhexlify
-            pb.id = orderId
+            pb.id = orderID
             pb.symbol = symbol
             pb.timeinforce = Int64(timeInForce.rawValue)
             pb.ordertype = Int64(orderType.rawValue)
@@ -184,7 +201,7 @@ class Message {
             var pb = CancelOrder()
             pb.symbol = symbol
             pb.sender = wallet.publicKeyHashHex.unhexlify
-            pb.refid = orderId
+            pb.refid = orderID
             return try pb.serializedData()
 
         case .freeze:
@@ -251,7 +268,7 @@ class Message {
 
         case .vote:
             var vote = Vote()
-            vote.proposalId = Int64(proposalId)
+            vote.proposalID = Int64(proposalID)
             vote.voter = wallet.publicKeyHashHex.unhexlify
             vote.option = Int64(voteOption.rawValue)
             return try vote.serializedData()
@@ -272,7 +289,7 @@ class Message {
         case .newOrder:
             String(
                 format: JSON.newOrder,
-                orderId,
+                orderID,
                 orderType.rawValue,
                 price.encoded,
                 quantity.encoded,
@@ -285,7 +302,7 @@ class Message {
         case .cancelOrder:
             String(
                 format: JSON.cancelOrder,
-                orderId,
+                orderID,
                 wallet.address,
                 symbol
             )
@@ -331,7 +348,7 @@ class Message {
             String(
                 format: JSON.vote,
                 voteOption.rawValue,
-                proposalId,
+                proposalID,
                 wallet.address
             )
 
@@ -339,7 +356,7 @@ class Message {
             String(
                 format: JSON.signature,
                 wallet.accountNumber,
-                wallet.chainId,
+                wallet.chainID,
                 memo,
                 json(for: self.type),
                 wallet.sequence,
@@ -350,7 +367,6 @@ class Message {
             "{}"
         }
     }
-
 }
 
 extension Double {
@@ -363,7 +379,6 @@ extension Double {
 // MARK: - JSON
 
 private class JSON {
-
     // Signing requires a strictly ordered JSON string. Neither swift nor
     // SwiftyJSON maintained the order, so instead we use strings.
 
@@ -398,5 +413,4 @@ private class JSON {
     static let vote = """
         {"option":%d,proposal_id":%d,voter":"%@"}
         """
-
 }

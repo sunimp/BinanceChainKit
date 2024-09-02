@@ -1,8 +1,7 @@
 //
 //  Protocols.swift
-//  BinanceChainKit
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2019/7/29.
 //
 
 import Foundation
@@ -14,7 +13,13 @@ protocol IApiProvider {
     func transactions(account: String, limit: Int, startTime: TimeInterval) async throws -> [Tx]
     func account(for: String) async throws -> Account
     func send(symbol: String, to: String, amount: Double, memo: String, wallet: Wallet) async throws -> String
-    func transferOut(symbol: String, bscPublicKeyHash: Data, amount: Double, expireTime: Int64, wallet: Wallet) async throws
+    func transferOut(
+        symbol: String,
+        bscPublicKeyHash: Data,
+        amount: Double,
+        expireTime: Int64,
+        wallet: Wallet
+    ) async throws
         -> String
     func blockHeight(forTransaction: String) async throws -> Int
 }
@@ -34,7 +39,13 @@ protocol IStorage {
     func save(balances: [Balance])
     func save(transactions: [Transaction])
 
-    func transactions(symbol: String, fromAddress: String?, toAddress: String?, fromTransactionHash: String?, limit: Int?)
+    func transactions(
+        symbol: String,
+        fromAddress: String?,
+        toAddress: String?,
+        fromTransactionHash: String?,
+        limit: Int?
+    )
         -> [Transaction]
     func transaction(symbol: String, hash: String) -> Transaction?
 }
