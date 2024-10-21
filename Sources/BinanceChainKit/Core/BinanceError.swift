@@ -1,5 +1,6 @@
 //
 //  BinanceError.swift
+//  BinanceChainKit
 //
 //  Created by Sun on 2020/5/7.
 //

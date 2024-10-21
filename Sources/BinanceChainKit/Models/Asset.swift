@@ -1,5 +1,6 @@
 //
 //  Asset.swift
+//  BinanceChainKit
 //
 //  Created by Sun on 2019/7/30.
 //
@@ -7,7 +8,7 @@
 import Combine
 import Foundation
 
-import WWExtensions
+import SWExtensions
 
 // MARK: - Asset
 

@@ -1,5 +1,6 @@
 //
 //  BinanceAddressValidator.swift
+//  BinanceChainKit
 //
 //  Created by Sun on 2023/2/28.
 //

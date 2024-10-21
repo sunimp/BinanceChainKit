@@ -1,4 +1,4 @@
-# BinanceChainKit.Swift
+# BinanceChainKit
 
 ## Requirements
 
@@ -12,11 +12,11 @@
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/sunimp/BinanceChainKit.Swift.git", .upToNextMajor(from: "2.1.0"))
+    .package(url: "https://github.com/sunimp/BinanceChainKit.git", .upToNextMajor(from: "1.0.0"))
 ]
 ```
 
 ## License
 
-The `BinanceChainKit.Swift` toolkit is open source and available under the terms of the [MIT License](https://github.com/sunimp/BinanceChainKit.Swift/blob/master/LICENSE).
+The `BinanceChainKit` toolkit is open source and available under the terms of the [MIT License](https://github.com/sunimp/BinanceChainKit/blob/master/LICENSE).
 

@@ -1,5 +1,6 @@
 //
 //  Extensions.swift
+//  BinanceChainKit
 //
 //  Created by Sun on 2019/7/29.
 //
@@ -7,6 +8,7 @@
 import Foundation
 
 import SwiftyJSON
+import Alamofire
 
 extension String {
     var unhexlify: Data {
@@ -107,7 +109,8 @@ extension String {
     }
 }
 
-extension [String: Any] {
+extension Parameters {
+    
     var query: String {
         let items: [URLQueryItem] = compactMap { URLQueryItem(name: $0.key, value: String(describing: $0.value)) }
         let url = NSURLComponents()

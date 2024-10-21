@@ -1,5 +1,6 @@
 //
 //  Parser.swift
+//  BinanceChainKit
 //
 //  Created by Sun on 2019/7/29.
 //
@@ -7,7 +8,7 @@
 import Foundation
 
 import SwiftyJSON
-import WWToolKit
+import SWToolKit
 
 // MARK: - Parser
 

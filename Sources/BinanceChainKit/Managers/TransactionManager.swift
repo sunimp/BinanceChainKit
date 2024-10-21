@@ -1,12 +1,13 @@
 //
 //  TransactionManager.swift
+//  BinanceChainKit
 //
 //  Created by Sun on 2019/7/30.
 //
 
 import Foundation
 
-import WWToolKit
+import SWToolKit
 
 class TransactionManager {
     // MARK: Nested Types

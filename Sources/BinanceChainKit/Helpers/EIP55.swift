@@ -1,12 +1,13 @@
 //
 //  EIP55.swift
+//  BinanceChainKit
 //
 //  Created by Sun on 2021/3/11.
 //
 
 import Foundation
 
-import WWCryptoKit
+import SWCryptoKit
 
 enum EIP55 {
     static func format(address: Data) -> String {

@@ -1,5 +1,6 @@
 //
 //  BinanceChainApiProvider.swift
+//  BinanceChainKit
 //
 //  Created by Sun on 2019/7/29.
 //
@@ -7,13 +8,13 @@
 import Foundation
 
 import Alamofire
-import WWToolKit
+@preconcurrency import SWToolKit
 
 // MARK: - BinanceChainApiProvider
 
 // https://binance-chain.github.io/api-reference/dex-api/paths.html
 
-class BinanceChainApiProvider {
+class BinanceChainApiProvider: @unchecked Sendable {
     // MARK: Nested Types
 
     public class Response {
@@ -398,7 +399,7 @@ class BinanceChainApiProvider {
 // MARK: RequestInterceptor
 
 extension BinanceChainApiProvider: RequestInterceptor {
-    class RateLimitRetrier: RequestInterceptor {
+    class RateLimitRetrier: RequestInterceptor, @unchecked Sendable {
         // MARK: Properties
 
         private var attempt = 0

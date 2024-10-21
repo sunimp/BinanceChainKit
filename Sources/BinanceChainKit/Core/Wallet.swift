@@ -1,5 +1,6 @@
 //
 //  Wallet.swift
+//  BinanceChainKit
 //
 //  Created by Sun on 2019/7/29.
 //
@@ -7,7 +8,7 @@
 import Foundation
 
 import HDWalletKit
-import WWCryptoKit
+import SWCryptoKit
 
 // MARK: - Wallet
 
